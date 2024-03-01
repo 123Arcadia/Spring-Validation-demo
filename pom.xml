@@ -61,36 +61,117 @@
         </dependencies>
     </dependencyManagement>
 
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>3.8.1</version>-->
+<!--                <configuration>-->
+<!--                    <source>17</source>-->
+<!--                    <target>17</target>-->
+<!--                    <encoding>UTF-8</encoding>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <version>${spring-boot.version}</version>-->
+<!--                <configuration>-->
+<!--                    <mainClass>com.zcw.springvalidationdemo.SpringValidationDemoApplication</mainClass>-->
+<!--                    <skip>true</skip>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>repackage</id>-->
+<!--                        <goals>-->
+<!--                            <goal>repackage</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
+
+    <!---springboot的jar加密s-->
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>3.8.1</version>-->
+<!--                <configuration>-->
+<!--                    <source>17</source>-->
+<!--                    <target>17</target>-->
+<!--                    <encoding>UTF-8</encoding>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
-                <configuration>
-                    <mainClass>com.zcw.springvalidationdemo.SpringValidationDemoApplication</mainClass>
-                    <skip>true</skip>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <layout>zip</layout>-->
+<!--                    <includes>-->
+<!--                        <include>-->
+<!--                            <groupId>org.springframework</groupId>-->
+<!--                            <artifactId>spring-core</artifactId>-->
+<!--                        </include>-->
+<!--                    </includes>-->
+<!--                </configuration>-->
                 <executions>
                     <execution>
-                        <id>repackage</id>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <!--
+                    1. 加密后,方法体被清空,保留方法参数、注解等信息.主要兼容swagger文档注解扫描
+                    2. 方法体被清空后,反编译只能看到方法名和注解,看不到方法体的具体内容
+                    3. 加密后的项目需要设置javaagent来启动,启动过程中解密class,完全内存解密,不留下任何解密后的文件
+                    4. 启动加密后的jar,生成xxx-encrypted.jar,这个就是加密后的jar文件,加密后不可直接执行
+                    5. 无密码启动方式,java -javaagent:xxx-encrypted.jar -jar xxx-encrypted.jar
+                    6. 有密码启动方式,java -javaagent:xxx-encrypted.jar='-pwd= 密码' -jar xxx-encrypted.jar
+                -->
+                <groupId>net.roseboy</groupId>
+                <artifactId>classfinal-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <!--
+                    参数说明
+                    -file        加密的jar/war完整路径
+                    -packages    加密的包名(可为空,多个用","分割)
+                    -libjars     jar/war包lib下要加密jar文件名(可为空,多个用","分割)
+                    -cfgfiles    需要加密的配置文件，一般是classes目录下的yml或properties文件(可为空,多个用","分割)
+                    -exclude     排除的类名(可为空,多个用","分割)
+                    -classpath   外部依赖的jar目录，例如/tomcat/lib(可为空,多个用","分割)
+                    -pwd         加密密码，如果是#号，则使用无密码模式加密
+                    -code        机器码，在绑定的机器生成，加密后只可在此机器上运行
+                    -Y           无需确认，不加此参数会提示确认以上信息
+                    -->
+                    <password>123456</password><!-- #表示启动时不需要密码,事实上对于代码混淆来说,这个密码没什么用,它只是一个启动密码 -->
+                    <excludes>org.spring</excludes>
+                    <packages>${project.groupId}</packages><!-- 加密的包名,多个包用逗号分开 -->
+                    <!--不能用cfgfiles, 否则会报错!!!!-->
+<!--                    <cfgfiles>application.properties</cfgfiles>&lt;!&ndash; 加密的配置文件,多个包用逗号分开 &ndash;&gt;-->
+                    <libjars></libjars> <!-- jar包lib下面要加密的jar依赖文件,多个包用逗号分开 -->
+<!--                    <code>xxxx</code> &lt;!&ndash; 指定机器启动,机器码 &ndash;&gt;-->
+
+
+                </configuration>
+                <executions>
+                    <execution>
+<!--                        <phase>package</phase>-->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>classFinal</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>
