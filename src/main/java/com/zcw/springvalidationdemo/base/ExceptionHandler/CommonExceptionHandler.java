@@ -1,4 +1,4 @@
-package com.zcw.springvalidationdemo.base;
+package com.zcw.springvalidationdemo.base.ExceptionHandler;
 
 import com.zcw.springvalidationdemo.ResultHandle.Result;
 import com.zcw.springvalidationdemo.ResultHandle.ResultCode;

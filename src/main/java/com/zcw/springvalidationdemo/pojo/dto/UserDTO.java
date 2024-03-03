@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -19,11 +20,11 @@ public class UserDTO {
      * 保存User的时候，UserId是可空的，但是更新User的时候，UserId的值必须>=10000000000000000L
      */
     @ApiModelProperty("用户id")
-    @Min(value = 10000000000000000L, groups = Update.class)
+    @Min(value = 10000000000000000L, groups = Update.class, message = "{user.id.required}")
     private Long userId;
 
     @ApiModelProperty("用户名")
-    @NotNull(groups = {Save.class, Update.class})
+    @NotNull(groups = {Save.class, Update.class}, message = "{user.name.required=}")
     @Length(min = 2, max = 10, groups = {Save.class, Update.class})
     private String userName;
 
@@ -41,6 +42,9 @@ public class UserDTO {
     @NotNull(groups = {Save.class, Update.class})
     @Valid
     private Job job;
+
+    @Range(min = 18, max = 99, message = "{user.age.invalid}", groups = {Save.class, Update.class})
+    private Integer age;
 
     //自定义不为空的校验
     @EncryptId

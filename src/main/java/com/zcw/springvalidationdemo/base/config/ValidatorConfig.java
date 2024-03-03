@@ -1,4 +1,4 @@
-package com.zcw.springvalidationdemo.base.Vaildation;
+package com.zcw.springvalidationdemo.base.config;
 
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.context.annotation.Bean;

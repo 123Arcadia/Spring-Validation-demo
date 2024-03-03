@@ -17,4 +17,8 @@ public class EnvironmentConfig implements EnvironmentAware {
     public void setEnvironment(Environment environment) {
         System.out.println(environment);
     }
+
+
+
+
 }

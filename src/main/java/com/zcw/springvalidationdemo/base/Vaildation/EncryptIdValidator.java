@@ -11,6 +11,9 @@ public class EncryptIdValidator implements ConstraintValidator<EncryptId, String
      */
     private static final Pattern PATTERN = Pattern.compile("^[a-f\\d]{32,256}$");
 
+    /**
+     * 是否强制校验的boolean值；默认true
+     */
     private boolean required;
     @Override
     public void initialize(EncryptId constraintAnnotation) {
